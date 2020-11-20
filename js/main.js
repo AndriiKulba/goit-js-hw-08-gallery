@@ -64,33 +64,33 @@ const images = [
   },
 ];
 
-// const images = [
-//   {
-//     url:
-//       "https://images.pexels.com/photos/140134/pexels-photo-140134.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260",
-//     alt: "White and Black Long Fur Cat",
-//   },
-//   {
-//     url:
-//       "https://images.pexels.com/photos/213399/pexels-photo-213399.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260",
-//     alt: "Orange and White Koi Fish Near Yellow Koi Fish",
-//   },
-//   {
-//     url:
-//       "https://images.pexels.com/photos/219943/pexels-photo-219943.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260",
-//     alt: "Group of Horses Running",
-//   },
-// ];
-
 // const galleryRef = document.querySelector(".js-gallery");
-// const createLinksGalleryRef = (image) => {
-//   const linkGalleryRef = document.createElement("li");
-
-//   linkGalleryRef.insertAdjacentHTML(
+// console.log(galleryRef);
+// const createImagesRef = (image) => {
+//   console.log(image);
+//   const linkRef = document.createElement("li");
+//   linkRef.insertAdjacentHTML(
 //     "beforeend",
 //     `<img src="${image.preview}" alt="${image.description}" />`
 //   );
-//   return linkGalleryRef;
+//   console.log(linkRef);
+//   return linkRef;
 // };
-// const linksGalleryRef = images.map((image) => createLinksGalleryRef(image));
-// galleryRef.append(...linksGalleryRef);
+// // const linksGalleryRef = images.map((image) => createImagesRef(image));
+// // galleryRef.append(...linksGalleryRef);
+// createImagesRef(images);
+
+const galleryRef = document.querySelector(".js-gallery");
+const createLinksGalleryRef = (image) => {
+  const linkGalleryRef = document.createElement("li");
+  linkGalleryRef.classList.add("gallery__item");
+
+  linkGalleryRef.insertAdjacentHTML(
+    "beforeend",
+    `<img src="${image.preview}" class="gallery__image" alt="${image.description} class="gallery__image" />`
+  );
+  console.log(linkGalleryRef);
+  return linkGalleryRef;
+};
+const linksGalleryRef = images.map((image) => createLinksGalleryRef(image));
+galleryRef.append(...linksGalleryRef);
