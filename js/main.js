@@ -65,32 +65,70 @@ const images = [
 ];
 
 // const galleryRef = document.querySelector(".js-gallery");
-// console.log(galleryRef);
-// const createImagesRef = (image) => {
-//   console.log(image);
-//   const linkRef = document.createElement("li");
-//   linkRef.insertAdjacentHTML(
+// const createLinksGalleryRef = (image) => {
+//   const linkGalleryRef = document.createElement("li");
+//   linkGalleryRef.classList.add("gallery__item");
+
+//   linkGalleryRef.insertAdjacentHTML(
 //     "beforeend",
-//     `<img src="${image.preview}" alt="${image.description}" />`
+//     `<img src="${image.preview}" class="gallery__image" alt="${image.description} class="gallery__image" />`
 //   );
-//   console.log(linkRef);
-//   return linkRef;
+//   console.log(linkGalleryRef);
+//   return linkGalleryRef;
 // };
-// // const linksGalleryRef = images.map((image) => createImagesRef(image));
-// // galleryRef.append(...linksGalleryRef);
-// createImagesRef(images);
+// const linksGalleryRef = images.map((image) => createLinksGalleryRef(image));
+// galleryRef.append(...linksGalleryRef);
 
 const galleryRef = document.querySelector(".js-gallery");
-const createLinksGalleryRef = (image) => {
-  const linkGalleryRef = document.createElement("li");
-  linkGalleryRef.classList.add("gallery__item");
+const lightboxRef = document.querySelector(".js-lightbox");
+const lightboxImageRef = document.querySelector(".lightbox__image");
+const lightboxbtn = document.querySelector(`[data-action = "close-lightbox"]`);
+console.log(lightboxbtn);
+const linksGalleryRef = createLinksGalleryRef(images);
+galleryRef.insertAdjacentHTML("beforeend", linksGalleryRef);
 
-  linkGalleryRef.insertAdjacentHTML(
-    "beforeend",
-    `<img src="${image.preview}" class="gallery__image" alt="${image.description} class="gallery__image" />`
-  );
-  console.log(linkGalleryRef);
-  return linkGalleryRef;
-};
-const linksGalleryRef = images.map((image) => createLinksGalleryRef(image));
-galleryRef.append(...linksGalleryRef);
+galleryRef.addEventListener("click", onImageClick);
+
+lightboxRef.addEventListener("click", onBtnCloseClick);
+
+function createLinksGalleryRef(images) {
+  return images
+    .map(({ preview, original, description }) => {
+      return `<li class="gallery__item">
+  <a
+    class="gallery__link"
+    href="${original}">
+    <img
+      class="gallery__image"
+      src="${preview}"
+      data-source="${original}"
+      alt="${description}"/>
+  </a>
+      `;
+    })
+    .join("");
+}
+
+function onImageClick(e) {
+  e.preventDefault();
+  if (!e.target.classList.contains("gallery__image")) {
+    return;
+  }
+  lightboxRef.classList.add("is-open");
+
+  lightboxImageRef.src = e.target.dataset.source;
+  lightboxImageRef.alt = e.target.alt;
+  console.log(e.target);
+  console.log(e.currentTarget);
+}
+
+function onBtnCloseClick(e) {
+  if (!e.target.classList.contains("lightbox__button")) {
+    return;
+  }
+  lightboxRef.classList.remove("is-open");
+  lightboxImageRef.src = " ";
+  lightboxImageRef.alt = " ";
+  console.log(lightboxImageRef);
+}
+console.log(lightboxRef);
