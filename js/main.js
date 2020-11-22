@@ -80,16 +80,19 @@ const images = [
 // galleryRef.append(...linksGalleryRef);
 
 const galleryRef = document.querySelector(".js-gallery");
+const activeImage = galleryRef.querySelector(".active");
 const lightboxRef = document.querySelector(".js-lightbox");
 const lightboxImageRef = document.querySelector(".lightbox__image");
 const lightboxbtn = document.querySelector(`[data-action = "close-lightbox"]`);
-console.log(lightboxbtn);
-const linksGalleryRef = createLinksGalleryRef(images);
-galleryRef.insertAdjacentHTML("beforeend", linksGalleryRef);
 
+const linksGalleryRef = createLinksGalleryRef(images);
+
+galleryRef.insertAdjacentHTML("beforeend", linksGalleryRef);
 galleryRef.addEventListener("click", onImageClick);
 
 lightboxRef.addEventListener("click", onBtnCloseClick);
+document.addEventListener("keyup", escapeClose);
+document.addEventListener("keyup", imageSlide);
 
 function createLinksGalleryRef(images) {
   return images
@@ -114,21 +117,78 @@ function onImageClick(e) {
   if (!e.target.classList.contains("gallery__image")) {
     return;
   }
-  lightboxRef.classList.add("is-open");
 
-  lightboxImageRef.src = e.target.dataset.source;
-  lightboxImageRef.alt = e.target.alt;
-  console.log(e.target);
-  console.log(e.currentTarget);
+  lightboxOpen(e.target);
 }
 
 function onBtnCloseClick(e) {
-  if (!e.target.classList.contains("lightbox__button")) {
+  if (
+    !e.target.classList.contains("lightbox__button") &
+    !e.target.classList.contains("lightbox__overlay")
+  ) {
     return;
   }
+  lightboxClose();
+}
+
+function lightboxOpen(evt) {
+  lightboxRef.classList.add("is-open");
+  addActiveImage(evt);
+  addLightboxImageAtribute();
+}
+
+function lightboxClose() {
   lightboxRef.classList.remove("is-open");
+  removeActiveImage();
+  removeLightboxImageAtribute();
+}
+
+function addActiveImage(evt) {
+  evt.classList.add("active");
+}
+function removeActiveImage() {
+  const activeImage = galleryRef.querySelector(".active");
+  activeImage.classList.remove("active");
+}
+function addLightboxImageAtribute() {
+  const activeImage = galleryRef.querySelector(".active");
+  lightboxImageRef.src = activeImage.dataset.source;
+  lightboxImageRef.alt = activeImage.alt;
+}
+function removeLightboxImageAtribute() {
   lightboxImageRef.src = " ";
   lightboxImageRef.alt = " ";
-  console.log(lightboxImageRef);
 }
-console.log(lightboxRef);
+
+function escapeClose(e) {
+  if (lightboxRef.classList.contains("is-open")) {
+    if (e.key === "Escape") {
+      lightboxClose();
+    }
+  }
+}
+
+function imageSlide(e) {
+  if (lightboxRef.classList.contains("is-open")) {
+    if (e.key === "ArrowRight") {
+      const activeImage = galleryRef.querySelector(".active");
+      const nextImage = activeImage
+        .closest(".gallery__item")
+        .nextSibling.querySelector(".gallery__image");
+
+      removeActiveImage();
+      addActiveImage(nextImage);
+      addLightboxImageAtribute();
+    }
+    if (e.key === "ArrowLeft") {
+      const activeImage = galleryRef.querySelector(".active");
+      const nextImage = activeImage
+        .closest(".gallery__item")
+        .previousSibling.querySelector(".gallery__image");
+
+      removeActiveImage();
+      addActiveImage(nextImage);
+      addLightboxImageAtribute();
+    }
+  }
+}
