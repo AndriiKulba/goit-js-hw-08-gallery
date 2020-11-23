@@ -91,8 +91,16 @@ galleryRef.insertAdjacentHTML("beforeend", linksGalleryRef);
 galleryRef.addEventListener("click", onImageClick);
 
 lightboxRef.addEventListener("click", onBtnCloseClick);
-document.addEventListener("keyup", escapeClose);
-document.addEventListener("keyup", imageSlide);
+
+function addlightboxEventListener() {
+  document.addEventListener("keyup", escapeClose);
+  document.addEventListener("keyup", imageSlide);
+}
+
+function removelightboxEventListener() {
+  document.removeEventListener("keyup", escapeClose);
+  document.removeEventListener("keyup", imageSlide);
+}
 
 function createLinksGalleryRef(images) {
   return images
@@ -123,7 +131,7 @@ function onImageClick(e) {
 
 function onBtnCloseClick(e) {
   if (
-    !e.target.classList.contains("lightbox__button") &
+    !e.target.classList.contains("lightbox__button") &&
     !e.target.classList.contains("lightbox__overlay")
   ) {
     return;
@@ -135,12 +143,14 @@ function lightboxOpen(evt) {
   lightboxRef.classList.add("is-open");
   addActiveImage(evt);
   addLightboxImageAtribute();
+  addlightboxEventListener();
 }
 
 function lightboxClose() {
   lightboxRef.classList.remove("is-open");
   removeActiveImage();
   removeLightboxImageAtribute();
+  removelightboxEventListener();
 }
 
 function addActiveImage(evt) {
@@ -161,34 +171,34 @@ function removeLightboxImageAtribute() {
 }
 
 function escapeClose(e) {
-  if (lightboxRef.classList.contains("is-open")) {
-    if (e.key === "Escape") {
-      lightboxClose();
-    }
+  if (e.key === "Escape") {
+    lightboxClose();
   }
 }
 
 function imageSlide(e) {
-  if (lightboxRef.classList.contains("is-open")) {
-    if (e.key === "ArrowRight") {
-      const activeImage = galleryRef.querySelector(".active");
-      const nextImage = activeImage
-        .closest(".gallery__item")
-        .nextSibling.querySelector(".gallery__image");
-
-      removeActiveImage();
-      addActiveImage(nextImage);
-      addLightboxImageAtribute();
+  if (e.key === "ArrowRight") {
+    const activeImage = galleryRef.querySelector(".active");
+    const nextItem = activeImage.closest(".gallery__item").nextSibling;
+    if (!nextItem) {
+      return;
     }
-    if (e.key === "ArrowLeft") {
-      const activeImage = galleryRef.querySelector(".active");
-      const nextImage = activeImage
-        .closest(".gallery__item")
-        .previousSibling.querySelector(".gallery__image");
+    const nextImage = nextItem.querySelector(".gallery__image");
 
-      removeActiveImage();
-      addActiveImage(nextImage);
-      addLightboxImageAtribute();
+    removeActiveImage();
+    addActiveImage(nextImage);
+    addLightboxImageAtribute();
+  }
+  if (e.key === "ArrowLeft") {
+    const activeImage = galleryRef.querySelector(".active");
+    const previousItem = activeImage.closest(".gallery__item").previousSibling;
+    if (!previousItem) {
+      return;
     }
+    const previousImage = previousItem.querySelector(".gallery__image");
+
+    removeActiveImage();
+    addActiveImage(previousImage);
+    addLightboxImageAtribute();
   }
 }
